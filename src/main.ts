@@ -48,18 +48,40 @@ const state: Emails = {
     },
   ],
 };
+let main = document.querySelector("main");
+let filterEmails = document.querySelector<HTMLInputElement>(".filter-input");
+if (filterEmails) filterEmails.addEventListener("input", filterEmailsAction);
+
+function filterEmailsAction(e: any) {
+  let filterInput = e.target.value;
+
+  if (!main) return;
+  for (let email of state.emails) {
+    if (!email.from.includes(filterInput) && filterInput.length !== 0) {
+      main.innerHTML = "";
+      email.contains = false;
+      renderEmails();
+    } else {
+      email.contains = true;
+      main.innerHTML = "";
+      renderEmails();
+    }
+  }
+}
 renderEmails();
 
 function renderEmails() {
+  if (!main) return;
+
   let inboxTitle = document.createElement("h1");
   inboxTitle.textContent = "Inbox";
 
-  document.querySelector("main").appendChild(inboxTitle);
+  main.appendChild(inboxTitle);
 
   let emailsUl = document.createElement("ul");
   emailsUl.className = "emails-list";
 
-  let emails = getEmails(state.emails);
+  let emails = getEmails();
   for (let email of emails) {
     let emailList = document.createElement("li");
     emailList.className = "emails-list__item";
@@ -94,7 +116,7 @@ function renderEmails() {
     emailList.append(mark, userAvatar, senderName, emailContent);
     emailsUl.appendChild(emailList);
   }
-  document.querySelector("main").appendChild(emailsUl);
+  main.appendChild(emailsUl);
 }
 
 function getEmails() {
@@ -102,7 +124,9 @@ function getEmails() {
   return emails;
 }
 
-function clickEmail(email) {
+function clickEmail(email: Email) {
+  if (!main) return;
+
   let singleEmailSec = document.createElement("section");
   singleEmailSec.className = "single-email";
 
@@ -123,7 +147,7 @@ function clickEmail(email) {
 
   let singleEmailSender = document.createElement("span");
   singleEmailSender.className = "single-email__sender";
-  singleEmailSender.textContent = `${email.name} (${email.emailAddress})`;
+  singleEmailSender.textContent = `${email.from} (${email.emailAddress})`;
 
   let singleEmailTitle = document.createElement("h1");
   singleEmailTitle.className = "single-email__header";
@@ -140,5 +164,5 @@ function clickEmail(email) {
     singleEmailTitle,
     singleEmailContent
   );
-  document.querySelector("main")?.appendChild(singleEmailSec);
+  main.appendChild(singleEmailSec);
 }
