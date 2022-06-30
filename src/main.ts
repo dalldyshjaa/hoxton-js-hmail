@@ -60,13 +60,12 @@ function filterEmailsAction(e: any) {
     if (!email.from.includes(filterInput) && filterInput.length !== 0) {
       main.innerHTML = "";
       email.contains = false;
-      renderEmails();
     } else {
       email.contains = true;
       main.innerHTML = "";
-      renderEmails();
     }
   }
+  renderEmails();
 }
 renderEmails();
 
