@@ -63,6 +63,12 @@ function renderEmails() {
   for (let email of emails) {
     let emailList = document.createElement("li");
     emailList.className = "emails-list__item";
+    emailList.addEventListener("click", () => {
+      emailsUl.remove();
+      inboxTitle.remove();
+      email.read = true;
+      clickEmail(email);
+    });
 
     let mark = document.createElement("span");
     if (!email.read) {
@@ -94,4 +100,45 @@ function renderEmails() {
 function getEmails() {
   let emails = state.emails.filter((email) => email.contains);
   return emails;
+}
+
+function clickEmail(email) {
+  let singleEmailSec = document.createElement("section");
+  singleEmailSec.className = "single-email";
+
+  let backBtn = document.createElement("button");
+  backBtn.className = "single-email__button";
+  backBtn.textContent = "⬅Back";
+  backBtn.addEventListener("click", () => {
+    singleEmailSec.remove();
+    renderEmails();
+  });
+
+  let singleEmailSenderSec = document.createElement("div");
+  singleEmailSenderSec.className = "single-email__sender-section";
+
+  let singleEmailSenderAvatar = document.createElement("img");
+  singleEmailSenderAvatar.className = "single-email__image";
+  singleEmailSenderAvatar.src = email.img;
+
+  let singleEmailSender = document.createElement("span");
+  singleEmailSender.className = "single-email__sender";
+  singleEmailSender.textContent = `${email.name} (${email.emailAddress})`;
+
+  let singleEmailTitle = document.createElement("h1");
+  singleEmailTitle.className = "single-email__header";
+  singleEmailTitle.textContent = email.header;
+
+  let singleEmailContent = document.createElement("p");
+  singleEmailContent.className = "single-email__content";
+  singleEmailContent.textContent = email.content;
+
+  singleEmailSenderSec.append(singleEmailSenderAvatar, singleEmailSender);
+  singleEmailSec.append(
+    backBtn,
+    singleEmailSenderSec,
+    singleEmailTitle,
+    singleEmailContent
+  );
+  document.querySelector("main")?.appendChild(singleEmailSec);
 }
